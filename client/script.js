@@ -3,15 +3,43 @@
 let apiUrl = "http://localhost:3000/todos";
 let todoInput = document.querySelector(".todo-box");
 let addButton = document.getElementById("add-task");
-let todoContainer = document.getElementById;
+let todoContainer = document.getElementById("todo-list");
 document.addEventListener("DOMContentLoaded", () => {
   const getTodo = async () => {
+    todoContainer.innerHTML = "";
     let response = await fetch(apiUrl);
     let data = await response.json();
 
-    console.log(data);
+    data.forEach((data) => {
+      console.log(data);
+
+      const li = document.createElement("li");
+      const button = document.createElement("button");
+      button.textContent = "Delete";
+
+      button.addEventListener("click", () => {
+        const deleteTodo = async (id) => {
+          fetch(`${apiUrl}/${id}`, {
+            method: "DELETE",
+          })
+            .then((response) => response.json())
+            .then((data) => console.log(data))
+            .catch((error) => console.log(error));
+
+          getTodo();
+        };
+
+        deleteTodo(data.id);
+      });
+
+      li.innerHTML = data.todo;
+
+      todoContainer.appendChild(li);
+      li.appendChild(button);
+    });
   };
   getTodo();
+
   const addTodo = () => {
     let todoValue = todoInput.value;
 
